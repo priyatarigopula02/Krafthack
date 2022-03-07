@@ -44,3 +44,7 @@ def track_time(df):
     tps =np.array(df.index[:])
     tp_diff =(tps-tps[0])/np.timedelta64(1, 's')
     return tp_diff
+
+def binarize_mode(df):
+    mode = np.where(df['mode'] == 'start', 0, 1)
+    return mode
