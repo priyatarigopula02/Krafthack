@@ -1,0 +1,4 @@
+.idea
+*.parquet
+*.pdf
+*.csv
