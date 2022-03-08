@@ -7,6 +7,7 @@ def add_features(path_to_data):
     data = pd.read_parquet(path_to_data , engine= 'fastparquet')
     data = data.iloc[0:1350000]
 
+    # build some time dependent features in addition to those provided
     new_data = pd.DataFrame(data)
     new_data.insert(0, 'time_difference', timepoint_difference(data))
     new_data.insert(0, 'time_start', time_since_start(new_data))
@@ -19,17 +20,16 @@ def add_features(path_to_data):
                   'Turbine_Pressure Spiral Casing', 'Turbine_Rotational Speed', 'binary_mode']].values
     Y = new_data[['Bolt_1_Tensile', 'Bolt_2_Tensile', 'Bolt_3_Tensile', 'Bolt_4_Tensile', 'Bolt_5_Tensile',
                   'Bolt_6_Tensile']].values
-    np.savez('Input_to_NN.npz', X = X, Y = Y)
 
-    X =np.load('Input_to_NN.npz')['X'][0:1350000]
-    Y = np.load('Input_to_NN.npz')['Y'][0:1350000]
 
-    print(1)
+    # we constrained the data to first 1.35 million timepoints, the rest had huge number of missing values or NaNs
+    X = X[0:1350000, :]
+    Y = Y[0:1350000, :]
+
+    #Imputer to compensate missing values
     imputer = KNNImputer(n_neighbors=2, weights="distance")
     X = imputer.fit_transform(X)
-    print(100)
     Y = imputer.fit_transform(Y)
-    print(10)
     np.savez('Input_to_NN_notNAN.npz', X=X, Y=Y)
 
 

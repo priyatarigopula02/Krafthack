@@ -8,11 +8,11 @@ def time_since_start(df):
         if i == 0:
             time_start[i] = 1
         else:
-            if (df['mode'][i] == 'start') & (df['mode'][i - 1] == 'operation') & (df['time_difference'][i] < 500):
+            if (df['mode'][i] == 'start') & (df['mode'][i - 1] == 'operation') & (df['time_difference'][i] < 10000):
                 time_start[i] = 0
-            elif (df['mode'][i] == 'start') & (df['mode'][i - 1] == 'start') & (df['time_difference'][i] < 500):
+            elif (df['mode'][i] == 'start') & (df['mode'][i - 1] == 'start') & (df['time_difference'][i] < 10000):
                 time_start[i] = time_start[i - 1] + df['time_difference'][i]
-            elif (df['time_difference'][i] > 500):
+            elif (df['time_difference'][i] > 10000):
                 time_start[i] = 0
             elif (df['mode'][i] == 'operation'):
                 time_start[i] = time_start[i - 1]
@@ -25,10 +25,10 @@ def time_since_operation(df):
         if i == 0:
             time_op[i] = 1
         else:
-            if (df['mode'][i] == 'operation') & (df['time_difference'][i] < 500):
+            if (df['mode'][i] == 'operation') & (df['time_difference'][i] < 10000):
                 time_op[i] = time_op[i - 1] + df['time_difference'][i]
-            elif (df['mode'][i] == 'operation') & (df['time_difference'][i] > 500):
-                time_op[i] = time_op[i - 1]
+            elif (df['mode'][i] == 'operation') & (df['time_difference'][i] > 10000):
+                time_op[i] = 0
             elif (df['mode'][i] == 'start'):
                 time_op[i] = 0
     return time_op
@@ -46,5 +46,5 @@ def track_time(df):
     return tp_diff
 
 def binarize_mode(df):
-    mode = np.where(df['mode'] == 'start', 0, 1)
+    mode = np.where(df['mode'] == 'start', 0 , 1 )
     return mode
